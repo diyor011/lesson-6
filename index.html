@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TODO LIST</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            transition: all 0.3s ease;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        /* Light Theme */
+        body.light {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        /* Dark Theme */
+        body.dark {
+            background: linear-gradient(135deg, #2c3e50 0%, #3498db 100%);
+        }
+
+        .container {
+            width: 100%;
+            max-width: 500px;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        body.dark .container {
+            background: #2c3e50;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+        }
+
+        .header {
+            padding: 30px 30px 20px;
+            text-align: center;
+            position: relative;
+        }
+
+        .title {
+            font-size: 24px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 25px;
+            letter-spacing: 1px;
+        }
+
+        body.dark .title {
+            color: #ecf0f1;
+        }
+
+        .theme-toggle {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: #6c5ce7;
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            color: white;
+            cursor: pointer;
+            font-size: 18px;
+            transition: all 0.3s ease;
+        }
+
+        .theme-toggle:hover {
+            transform: scale(1.1);
+            box-shadow: 0 5px 15px rgba(108, 92, 231, 0.4);
+        }
+
+        body.dark .theme-toggle {
+            background: #3498db;
+        }
+
+        .input-container {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .todo-input {
+            flex: 1;
+            padding: 15px 20px;
+            border: 2px solid #e9ecef;
+            border-radius: 12px;
+            font-size: 16px;
+            outline: none;
+            transition: all 0.3s ease;
+            background: #f8f9fa;
+        }
+
+        .todo-input:focus {
+            border-color: #6c5ce7;
+            box-shadow: 0 0 0 3px rgba(108, 92, 231, 0.1);
+        }
+
+        body.dark .todo-input {
+            background: #34495e;
+            border-color: #4a6741;
+            color: #ecf0f1;
+        }
+
+        body.dark .todo-input:focus {
+            border-color: #3498db;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+        }
+
+        .add-btn {
+            padding: 15px 25px;
+            background: #6c5ce7;
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .add-btn:hover {
+            background: #5f4fcf;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(108, 92, 231, 0.4);
+        }
+
+        body.dark .add-btn {
+            background: #3498db;
+        }
+
+        body.dark .add-btn:hover {
+            background: #2980b9;
+            box-shadow: 0 5px 15px rgba(52, 152, 219, 0.4);
+        }
+
+        .search-btn {
+            padding: 15px 20px;
+            background: #28a745;
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .search-btn:hover {
+            background: #218838;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(40, 167, 69, 0.4);
+        }
+
+        body.dark .search-btn {
+            background: #27ae60;
+        }
+
+        body.dark .search-btn:hover {
+            background: #229954;
+        }
+
+        .todo-list {
+            padding: 0 30px 30px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .todo-item {
+            display: flex;
+            align-items: center;
+            padding: 15px 0;
+            border-bottom: 1px solid #eee;
+            transition: all 0.3s ease;
+            animation: slideIn 0.3s ease;
+        }
+
+        body.dark .todo-item {
+            border-bottom-color: #4a6741;
+        }
+
+        .todo-item:hover {
+            transform: translateX(5px);
+        }
+
+        .todo-checkbox {
+            width: 20px;
+            height: 20px;
+            border: 2px solid #6c5ce7;
+            border-radius: 6px;
+            margin-right: 15px;
+            cursor: pointer;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        body.dark .todo-checkbox {
+            border-color: #3498db;
+        }
+
+        .todo-checkbox.checked {
+            background: #6c5ce7;
+        }
+
+        body.dark .todo-checkbox.checked {
+            background: #3498db;
+        }
+
+        .todo-checkbox.checked::after {
+            content: '✓';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .todo-text {
+            flex: 1;
+            font-size: 16px;
+            color: #333;
+            transition: all 0.3s ease;
+        }
+
+        body.dark .todo-text {
+            color: #ecf0f1;
+        }
+
+        .todo-text.completed {
+            text-decoration: line-through;
+            opacity: 0.6;
+        }
+
+        .delete-btn {
+            background: #dc3545;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 8px 12px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: all 0.3s ease;
+            opacity: 0;
+        }
+
+        .todo-item:hover .delete-btn {
+            opacity: 1;
+        }
+
+        .delete-btn:hover {
+            background: #c82333;
+            transform: scale(1.1);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 50px 20px;
+            color: #999;
+            font-size: 16px;
+        }
+
+        body.dark .empty-state {
+            color: #7f8c8d;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Custom scrollbar */
+        .todo-list::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .todo-list::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+
+        body.dark .todo-list::-webkit-scrollbar-track {
+            background: #34495e;
+        }
+
+        .todo-list::-webkit-scrollbar-thumb {
+            background: #6c5ce7;
+            border-radius: 10px;
+        }
+
+        body.dark .todo-list::-webkit-scrollbar-thumb {
+            background: #3498db;
+        }
+
+        .todo-list::-webkit-scrollbar-thumb:hover {
+            background: #5f4fcf;
+        }
+    </style>
+</head>
+<body class="light">
+    <div class="container">
+        <div class="header">
+            <button class="theme-toggle" onclick="toggleTheme()">🌙</button>
+            <h1 class="title">TODO LIST</h1>
+            <div class="input-container">
+                <input type="text" class="todo-input" placeholder="Your task..." id="todoInput">
+                <button class="search-btn" onclick="searchTodos()">🔍</button>
+                <button class="add-btn" onclick="addTodo()">ADD</button>
+            </div>
+        </div>
+        <div class="todo-list" id="todoList">
+            <div class="empty-state">No tasks yet. Add your first task!</div>
+        </div>
+    </div>
+
+    <script>
+        let todos = [];
+        let currentTheme = 'light';
+
+        function toggleTheme() {
+            const body = document.body;
+            const themeToggle = document.querySelector('.theme-toggle');
+            
+            if (currentTheme === 'light') {
+                body.className = 'dark';
+                themeToggle.textContent = '☀️';
+                currentTheme = 'dark';
+            } else {
+                body.className = 'light';
+                themeToggle.textContent = '🌙';
+                currentTheme = 'light';
+            }
+        }
+
+        function addTodo() {
+            const input = document.getElementById('todoInput');
+            const text = input.value.trim();
+            
+            if (text === '') {
+                input.style.borderColor = '#dc3545';
+                setTimeout(() => {
+                    input.style.borderColor = currentTheme === 'light' ? '#e9ecef' : '#4a6741';
+                }, 1000);
+                return;
+            }
+
+            const todo = {
+                id: Date.now(),
+                text: text,
+                completed: false
+            };
+
+            todos.push(todo);
+            input.value = '';
+            renderTodos();
+        }
+
+        function toggleTodo(id) {
+            todos = todos.map(todo => 
+                todo.id === id ? { ...todo, completed: !todo.completed } : todo
+            );
+            renderTodos();
+        }
+
+        function deleteTodo(id) {
+            todos = todos.filter(todo => todo.id !== id);
+            renderTodos();
+        }
+
+        function searchTodos() {
+            const input = document.getElementById('todoInput');
+            const searchTerm = input.value.trim().toLowerCase();
+            
+            if (searchTerm === '') {
+                renderTodos();
+                return;
+            }
+
+            const filteredTodos = todos.filter(todo => 
+                todo.text.toLowerCase().includes(searchTerm)
+            );
+            
+            renderTodos(filteredTodos);
+        }
+
+        function renderTodos(todosToRender = todos) {
+            const todoList = document.getElementById('todoList');
+            
+            if (todosToRender.length === 0) {
+                todoList.innerHTML = '<div class="empty-state">No tasks found!</div>';
+                return;
+            }
+
+            todoList.innerHTML = todosToRender.map(todo => `
+                <div class="todo-item">
+                    <div class="todo-checkbox ${todo.completed ? 'checked' : ''}" 
+                         onclick="toggleTodo(${todo.id})"></div>
+                    <span class="todo-text ${todo.completed ? 'completed' : ''}">${todo.text}</span>
+                    <button class="delete-btn" onclick="deleteTodo(${todo.id})">Delete</button>
+                </div>
+            `).join('');
+        }
+
+        // Enter tugmasini bosish orqali todo qo'shish
+        document.getElementById('todoInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                addTodo();
+            }
+        });
+
+        // Demo ma'lumotlari
+        todos = [
+            { id: 1, text: 'NOTE #1', completed: false },
+            { id: 2, text: 'NOTE #2', completed: true },
+            { id: 3, text: 'NOTE #3', completed: false }
+        ];
+
+        renderTodos();
+    </script>
+</body>
+</html>
+</body>
+</html>
